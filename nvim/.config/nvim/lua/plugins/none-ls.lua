@@ -9,6 +9,7 @@ return {
 				-- Lua
         null_ls.builtins.formatting.stylua,
 				-- CPP
+        null_ls.builtins.formatting.clang_format,
 				-- Python
         null_ls.builtins.formatting.ruff,
 			},
