@@ -5,7 +5,10 @@ return {
 		priority = 1000,
 		config = function()
 			require("nightfox").setup({
-		    -- custom values here	
+        options = {
+          transparent = true,
+          dim_inactive = true,
+        }
       })
 			vim.cmd.colorscheme("dawnfox")
 		end,
