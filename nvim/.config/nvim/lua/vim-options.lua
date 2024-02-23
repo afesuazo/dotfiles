@@ -19,5 +19,8 @@ vim.api.nvim_set_keymap("n", "<C-h>", "<C-W>h", {noremap = true})
 vim.api.nvim_set_keymap("n", "<C-k>", "<C-W>k", {noremap = true})
 vim.api.nvim_set_keymap("n", "<C-l>", "<C-W>l", {noremap = true})
 
-vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
+vim.api.nvim_set_keymap("n", "<leader>h", ":noh<CR>", {})
+vim.api.nvim_set_keymap("n", "<leader>r", ":bufdo e!<CR>", {})
+vim.api.nvim_set_keymap("n", "<leader>w", ":wa<CR>", {})
+
 vim.wo.number = true
