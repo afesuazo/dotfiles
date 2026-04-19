@@ -1,0 +1,23 @@
+# ~/.gitconfig
+
+[init]
+  defaultBranch = master
+
+[pull]
+  rebase = true
+
+[fetch]
+  prune = true
+
+[rerere]
+  enabled = true
+
+[core]
+  excludesfile = ~/.config/git/ignore
+
+[alias]
+  st = status -sb
+  co = checkout
+  br = branch
+  cm = commit -m
+  lg = log --oneline --decorate --graph --all
