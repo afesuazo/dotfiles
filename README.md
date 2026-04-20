@@ -56,3 +56,13 @@ Check what chezmoi would change without applying:
 ```sh
 chezmoi diff
 ```
+
+## Roadmap
+
+- [x] Phase 1 — chezmoi layout, cross-platform bootstrap, repo cleanup
+- [ ] Phase 2 — `packages/Brewfile` (macOS) + per-distro Linux package lists, shared shell modules, macOS `defaults`, tmux TPM
+- [ ] Phase 3 — chezmoi templates for per-host / per-OS differences
+- [ ] Phase 4 — fix or remove the `devtools` CLI
+- [ ] Phase 5 — modernize nvim LSP, terminal profiles, tmux plugins
+- [ ] Phase 6 — secrets (age or 1Password CLI), SSH config scaffolding
+- [ ] Phase 7 — Claude Code config, atuin, CI on fresh macOS + Ubuntu runners
