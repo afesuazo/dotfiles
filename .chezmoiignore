@@ -1,0 +1,15 @@
+# Repo meta
+README.md
+bootstrap/
+packages/
+.idea/
+.vscode/
+.github/
+
+# Assets that live in the repo for reference but aren't dotfiles
+dawnfox.itermcolors
+
+# Platform-gated files
+# {{ if eq .chezmoi.os "darwin" }}
+# dot_config/systemd/
+# {{ end }}

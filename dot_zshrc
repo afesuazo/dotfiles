@@ -1,0 +1,24 @@
+# ~/.zshrc
+
+setopt HIST_IGNORE_DUPS
+setopt HIST_REDUCE_BLANKS
+HISTSIZE=200000
+SAVEHIST=200000
+HISTFILE="$HOME/.zsh_history"
+
+# Modular shell config - PATH, aliases, fzf, tool integrations, zsh plugins.
+# Files are loaded in alphabetical order; numeric prefixes enforce ordering.
+if [ -d "$HOME/.config/shell" ]; then
+  for f in "$HOME/.config/shell"/*.zsh; do
+    [ -r "$f" ] && source "$f"
+  done
+fi
+
+# Starship init
+command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
+
+# ---- safe local overrides ----
+# machine-specific tweaks / secrets.
+if [ -f "$HOME/.zshrc.local" ]; then
+  source "$HOME/.zshrc.local"
+fi

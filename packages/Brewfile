@@ -1,0 +1,36 @@
+# macOS package manifest - consumed by `brew bundle --file=packages/Brewfile`.
+
+# Shells & prompt
+brew "zsh"
+brew "starship"
+
+# Core CLI
+brew "git"
+brew "tmux"
+brew "neovim"
+brew "fzf"
+brew "ripgrep"
+brew "fd"
+brew "bat"
+brew "eza"
+brew "zoxide"
+brew "direnv"
+brew "jq"
+brew "gh"
+brew "curl"
+brew "wget"
+
+# Build / dev
+brew "cmake"
+brew "python@3.12"
+brew "fnm"
+
+# Zsh ergonomics
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
+
+# Terminal emulator
+cask "ghostty"
+
+# Font with Nerd Font glyphs (for Starship / nvim icons)
+cask "font-jetbrains-mono-nerd-font"
