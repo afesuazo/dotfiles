@@ -110,8 +110,6 @@ install_fnm_linux() {
 }
 
 install_ghostty_linux() {
-  # Ghostty: no stable apt repo; headless servers don't need it anyway.
-  # Skip silently unless a display is detected.
   if [ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
     log "No display detected — skipping Ghostty install"
     return
@@ -121,13 +119,13 @@ install_ghostty_linux() {
 }
 
 install_jetbrains_mono_linux() {
+  if [ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
+    log "No display detected — skipping font install"
+    return
+  fi
   local font_dir="${HOME}/.local/share/fonts"
   if compgen -G "${font_dir}/JetBrainsMonoNerd*.ttf" >/dev/null 2>&1; then
     log "JetBrains Mono Nerd Font already installed"
-    return
-  fi
-  if [ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
-    log "No display detected — skipping font install"
     return
   fi
   log "Installing JetBrains Mono Nerd Font"

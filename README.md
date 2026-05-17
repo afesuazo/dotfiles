@@ -32,7 +32,7 @@ chezmoi-managed tree — each `dot_*` / `dot_config/*` entry maps to `~/.*` or `
 │   └── install.sh               # OS-aware dispatcher + non-package-manager installs
 ├── dot_zshrc                    # → ~/.zshrc
 ├── dot_tmux.conf                # → ~/.tmux.conf
-├── dot_gitconfig                # → ~/.gitconfig
+├── dot_gitconfig.tmpl           # → ~/.gitconfig  (templated per identity)
 ├── dot_config/
 │   ├── shell/                   # → ~/.config/shell/  (sourced by ~/.zshrc)
 │   │   ├── 10-path.zsh          # PATH + brew shellenv
@@ -46,9 +46,26 @@ chezmoi-managed tree — each `dot_*` / `dot_config/*` entry maps to `~/.*` or `
 │   ├── nvim/                    # → ~/.config/nvim/  (lazy.nvim + plugins)
 │   ├── git/ignore               # → ~/.config/git/ignore
 │   └── starship.toml            # → ~/.config/starship.toml
+├── .chezmoi.toml.tmpl           # Schema of per-machine prompts (runs on `chezmoi init`)
 ├── .chezmoiignore               # Paths the repo keeps but DOESN'T deploy to $HOME
 └── .gitignore
 ```
+
+## Per-machine setup (prompts)
+
+On first `chezmoi init`, you'll be prompted for:
+
+| Prompt | Choices / Format | Used for |
+|---|---|---|
+| `identity` | `personal` / `work` / `hobby` | Just a category label — keeps machines straight |
+| `name` | Free-form (e.g., "Andres Suazo") | `[user] name` in git, nvim greeting |
+| `email` | Free-form | `[user] email` in git |
+| `signing_key` | Path to SSH pubkey (blank to skip) | Git commit signing via SSH |
+
+Answers are saved to `~/.config/chezmoi/chezmoi.toml` — **never** committed to the repo.
+
+To inspect current values: `chezmoi data`.
+To re-prompt (e.g., after changing identity): delete `~/.config/chezmoi/chezmoi.toml` and run `chezmoi init` again.
 
 ## Day-to-day
 
@@ -74,9 +91,9 @@ chezmoi diff
 ## Roadmap
 
 - [x] Phase 1 — chezmoi layout, cross-platform bootstrap, repo cleanup
-- [ ] Phase 2 — `packages/Brewfile` (macOS) + per-distro Linux package lists, shared shell modules, macOS `defaults`, tmux TPM
-- [ ] Phase 3 — chezmoi templates for per-host / per-OS differences
-- [ ] Phase 4 — fix or remove the `devtools` CLI
+- [x] Phase 2 — `packages/Brewfile` (macOS) + apt list (Linux), shared shell modules, Ghostty config, Dawnfox theme
+- [x] Phase 3 — chezmoi templates: per-machine identity, role, git config, nvim greeting
+- [ ] ~~Phase 4 — devtools CLI~~ (removed; revisit when there are concrete commands)
 - [ ] Phase 5 — modernize nvim LSP, terminal profiles, tmux plugins
 - [ ] Phase 6 — secrets (age or 1Password CLI), SSH config scaffolding
 - [ ] Phase 7 — Claude Code config, atuin, CI on fresh macOS + Ubuntu runners

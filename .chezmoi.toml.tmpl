@@ -1,0 +1,30 @@
+{{- /*
+  Per-machine config schema.
+
+  This file runs once on `chezmoi init` (and again if you re-run init). It
+  prompts for values and writes them to ~/.config/chezmoi/chezmoi.toml on
+  this machine only — those answers are NEVER committed to the repo.
+
+  To re-prompt: `chezmoi init` again, or delete ~/.config/chezmoi/chezmoi.toml.
+  To inspect current values: `chezmoi data`.
+*/ -}}
+
+{{- $identity := promptChoiceOnce . "identity"
+    "Identity for this machine"
+    (list "personal" "work" "hobby") -}}
+
+{{- $name := promptStringOnce . "name"
+    "Full name for git commits" -}}
+
+{{- $email := promptStringOnce . "email"
+    "Git email" -}}
+
+{{- $signingKey := promptStringOnce . "signing_key"
+    "Path to SSH public key for git signing (blank to skip)"
+    "" -}}
+
+[data]
+identity     = {{ $identity   | quote }}
+name         = {{ $name       | quote }}
+email        = {{ $email      | quote }}
+signing_key  = {{ $signingKey | quote }}

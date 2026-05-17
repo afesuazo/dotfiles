@@ -1,0 +1,42 @@
+# ~/.gitconfig — rendered from dot_gitconfig.tmpl
+# Identity on this machine: {{ .identity }}
+
+[user]
+  name = {{ .name }}
+  email = {{ .email }}
+{{- if .signing_key }}
+  signingkey = {{ .signing_key }}
+{{- end }}
+
+[init]
+  defaultBranch = master
+
+[pull]
+  rebase = true
+
+[fetch]
+  prune = true
+
+[rerere]
+  enabled = true
+
+[core]
+  excludesfile = ~/.config/git/ignore
+
+{{ if .signing_key -}}
+[commit]
+  gpgsign = true
+
+[tag]
+  gpgsign = true
+
+[gpg]
+  format = ssh
+
+{{ end -}}
+[alias]
+  st = status -sb
+  co = checkout
+  br = branch
+  cm = commit -m
+  lg = log --oneline --decorate --graph --all
