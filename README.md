@@ -25,15 +25,29 @@ chezmoi-managed tree — each `dot_*` / `dot_config/*` entry maps to `~/.*` or `
 
 ```
 .
-├── bootstrap/install.sh     # Entry point — installs chezmoi + applies repo
-├── dot_zshrc                # → ~/.zshrc
-├── dot_tmux.conf            # → ~/.tmux.conf
-├── dot_gitconfig            # → ~/.gitconfig
+├── bootstrap/install.sh         # Entry point — installs chezmoi + applies repo
+├── packages/                    # Software install (not config)
+│   ├── Brewfile                 # macOS formulae + casks
+│   ├── apt.txt                  # Debian/Ubuntu package list
+│   └── install.sh               # OS-aware dispatcher + non-package-manager installs
+├── dot_zshrc                    # → ~/.zshrc
+├── dot_tmux.conf                # → ~/.tmux.conf
+├── dot_gitconfig                # → ~/.gitconfig
 ├── dot_config/
-│   ├── nvim/                # → ~/.config/nvim
-│   ├── git/ignore           # → ~/.config/git/ignore
-│   └── starship.toml        # → ~/.config/starship.toml
-└── .chezmoiignore           # Paths in the repo that should NOT materialize to $HOME
+│   ├── shell/                   # → ~/.config/shell/  (sourced by ~/.zshrc)
+│   │   ├── 10-path.zsh          # PATH + brew shellenv
+│   │   ├── 20-aliases.zsh
+│   │   ├── 30-fzf.zsh
+│   │   ├── 40-tools.zsh         # zoxide / direnv / fnm
+│   │   └── 99-plugins.zsh       # autosuggestions / fzf-tab / syntax-highlighting
+│   ├── ghostty/                 # → ~/.config/ghostty/
+│   │   ├── config
+│   │   └── themes/dawnfox
+│   ├── nvim/                    # → ~/.config/nvim/  (lazy.nvim + plugins)
+│   ├── git/ignore               # → ~/.config/git/ignore
+│   └── starship.toml            # → ~/.config/starship.toml
+├── .chezmoiignore               # Paths the repo keeps but DOESN'T deploy to $HOME
+└── .gitignore
 ```
 
 ## Day-to-day
