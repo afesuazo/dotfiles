@@ -31,9 +31,6 @@ return {
   },
   {
     "mfussenegger/nvim-dap",
-    dependencies = {
-      "tpope/vim-fugitive",
-    },
     config = function(_, _)
       vim.keymap.set("n", "<Leader>db", ":DapToggleBreakpoint<CR>")
       vim.keymap.set("n", "<Leader>dc", ":DapContinue<CR>")
