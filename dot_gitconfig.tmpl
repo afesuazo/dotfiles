@@ -22,6 +22,21 @@
 
 [core]
   excludesfile = ~/.config/git/ignore
+  pager = delta
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  light = true
+  line-numbers = true
+  navigate = true
+
+[merge]
+  conflictstyle = zdiff3
+
+[diff]
+  colorMoved = default
 
 {{ if .signing_key -}}
 [commit]

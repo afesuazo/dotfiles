@@ -67,8 +67,29 @@ install_linux_packages() {
   install_eza_linux
   install_starship_linux
   install_fnm_linux
+  install_dust_linux
+  install_glow_linux
+  install_lazygit_linux
   install_ghostty_linux
   install_jetbrains_mono_linux
+}
+
+# Resolve the tag of the latest GitHub release by following the redirect from
+# /releases/latest. Avoids needing the API (no rate limits, no jq dependency).
+_github_latest_tag() {
+  curl -fsSIL "https://github.com/$1/releases/latest" \
+    | awk 'tolower($1) == "location:" { print $2 }' \
+    | tail -1 \
+    | sed 's|.*/tag/||' \
+    | tr -d '\r\n '
+}
+
+_linux_arch_or_die() {
+  case "$(uname -m)" in
+    x86_64|amd64)   printf 'x86_64\n' ;;
+    aarch64|arm64)  printf 'aarch64\n' ;;
+    *) die "Unsupported architecture: $(uname -m)" ;;
+  esac
 }
 
 install_gh_linux() {
@@ -107,6 +128,58 @@ install_fnm_linux() {
   command -v fnm >/dev/null 2>&1 && { log "fnm already installed"; return; }
   log "Installing fnm via official installer"
   curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+}
+
+# dust - not packaged in Debian/Ubuntu stable; install from GitHub releases.
+install_dust_linux() {
+  command -v dust >/dev/null 2>&1 && { log "dust already installed"; return; }
+  log "Installing dust from GitHub releases"
+  local arch tag tmp asset
+  arch="$(_linux_arch_or_die)"
+  tag="$(_github_latest_tag bootandy/dust)"
+  asset="dust-${tag}-${arch}-unknown-linux-gnu.tar.gz"
+  tmp="$(mktemp -d)"
+  curl -fsSL -o "${tmp}/dust.tgz" \
+    "https://github.com/bootandy/dust/releases/download/${tag}/${asset}"
+  tar -xzf "${tmp}/dust.tgz" -C "${tmp}" --strip-components=1
+  install -d "${HOME}/.local/bin"
+  install -m 0755 "${tmp}/dust" "${HOME}/.local/bin/dust"
+  rm -rf "${tmp}"
+}
+
+# glow — not in older Debian/Ubuntu. Use Charm's official apt repo.
+install_glow_linux() {
+  command -v glow >/dev/null 2>&1 && { log "glow already installed"; return; }
+  log "Installing glow via Charm's apt repo"
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://repo.charm.sh/apt/gpg.key \
+    | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+  echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" \
+    | sudo tee /etc/apt/sources.list.d/charm.list >/dev/null
+  sudo apt-get update -y
+  sudo apt-get install -y glow
+}
+
+# lazygit — not in stable Debian/Ubuntu; install from GitHub releases.
+install_lazygit_linux() {
+  command -v lazygit >/dev/null 2>&1 && { log "lazygit already installed"; return; }
+  log "Installing lazygit from GitHub releases"
+  local arch tag tmp asset version
+  case "$(uname -m)" in
+    x86_64|amd64)  arch="x86_64" ;;
+    aarch64|arm64) arch="arm64"  ;;
+    *) die "Unsupported architecture for lazygit: $(uname -m)" ;;
+  esac
+  tag="$(_github_latest_tag jesseduffield/lazygit)"
+  version="${tag#v}"                       # lazygit asset names use the bare version
+  asset="lazygit_${version}_Linux_${arch}.tar.gz"
+  tmp="$(mktemp -d)"
+  curl -fsSL -o "${tmp}/lazygit.tgz" \
+    "https://github.com/jesseduffield/lazygit/releases/download/${tag}/${asset}"
+  tar -xzf "${tmp}/lazygit.tgz" -C "${tmp}"
+  install -d "${HOME}/.local/bin"
+  install -m 0755 "${tmp}/lazygit" "${HOME}/.local/bin/lazygit"
+  rm -rf "${tmp}"
 }
 
 install_ghostty_linux() {
