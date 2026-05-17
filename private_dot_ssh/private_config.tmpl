@@ -1,0 +1,23 @@
+# ~/.ssh/config
+#
+# Actual host entries live in ~/.ssh/config.d/*.conf per-machine, NOT in the
+# repo. Suggested split:
+#   ~/.ssh/config.d/personal.conf   personal hosts (github, homelab, etc.)
+#   ~/.ssh/config.d/work.conf       work hosts
+#   ~/.ssh/config.d/hobby.conf      hobby project hosts
+#
+# Identity on this machine: {{ .identity }}
+
+# ---------- Defaults applied to every host ----------
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    AddKeysToAgent yes
+{{- if eq .chezmoi.os "darwin" }}
+    UseKeychain yes
+{{- end }}
+    HashKnownHosts yes
+
+# ---------- Per-machine host entries ----------
+# The Include is safe even if the directory is empty or missing.
+Include ~/.ssh/config.d/*.conf

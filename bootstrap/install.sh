@@ -47,7 +47,7 @@ install_chezmoi() {
   log "Installing chezmoi into ${CHEZMOI_BIN_DIR}"
   mkdir -p "${CHEZMOI_BIN_DIR}"
 
-  # Upstream installer — works on macOS and all major Linux distros without sudo.
+  # Upstream installer - works on macOS and all major Linux distros without sudo.
   if command -v curl >/dev/null 2>&1; then
     sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "${CHEZMOI_BIN_DIR}"
   elif command -v wget >/dev/null 2>&1; then
@@ -80,7 +80,7 @@ apply_dotfiles() {
 
 install_packages() {
   if [ "${SKIP_PACKAGES:-0}" = "1" ]; then
-    log "SKIP_PACKAGES=1 — skipping package install"
+    log "SKIP_PACKAGES=1 - skipping package install"
     return
   fi
   local pkg_script="${repo_root}/packages/install.sh"

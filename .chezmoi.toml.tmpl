@@ -3,7 +3,7 @@
 
   This file runs once on `chezmoi init` (and again if you re-run init). It
   prompts for values and writes them to ~/.config/chezmoi/chezmoi.toml on
-  this machine only — those answers are NEVER committed to the repo.
+  this machine only - those answers are NEVER committed to the repo.
 
   To re-prompt: `chezmoi init` again, or delete ~/.config/chezmoi/chezmoi.toml.
   To inspect current values: `chezmoi data`.
@@ -19,12 +19,16 @@
 {{- $email := promptStringOnce . "email"
     "Git email" -}}
 
+{{- $gitUsername := promptStringOnce . "git_username"
+    "Git username / branch prefix (e.g. andres_suazo, afesuazo)" -}}
+
 {{- $signingKey := promptStringOnce . "signing_key"
     "Path to SSH public key for git signing (blank to skip)"
     "" -}}
 
 [data]
-identity     = {{ $identity   | quote }}
-name         = {{ $name       | quote }}
-email        = {{ $email      | quote }}
-signing_key  = {{ $signingKey | quote }}
+identity     = {{ $identity    | quote }}
+name         = {{ $name        | quote }}
+email        = {{ $email       | quote }}
+git_username = {{ $gitUsername | quote }}
+signing_key  = {{ $signingKey  | quote }}

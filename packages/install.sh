@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Package installer — called by bootstrap/install.sh (or standalone).
+# Package installer - called by bootstrap/install.sh (or standalone).
 # Installs OS-appropriate packages and zsh plugins that aren't in package managers.
 
 set -euo pipefail
@@ -47,12 +47,12 @@ install_macos_packages() {
 # ---------- Linux (Ubuntu/Debian) ----------
 
 require_debian() {
-  [ -r /etc/os-release ] || die "Missing /etc/os-release — unsupported Linux"
+  [ -r /etc/os-release ] || die "Missing /etc/os-release - unsupported Linux"
   # shellcheck disable=SC1091
   . /etc/os-release
   case "${ID:-}:${ID_LIKE:-}" in
     *debian*|ubuntu*|*:*debian*|*:*ubuntu*) : ;;
-    *) die "This repo only supports Debian/Ubuntu Linux — detected ID=${ID:-?}" ;;
+    *) die "This repo only supports Debian/Ubuntu Linux - detected ID=${ID:-?}" ;;
   esac
 }
 
@@ -111,7 +111,7 @@ install_fnm_linux() {
 
 install_ghostty_linux() {
   if [ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
-    log "No display detected — skipping Ghostty install"
+    log "No display detected - skipping Ghostty install"
     return
   fi
   command -v ghostty >/dev/null 2>&1 && { log "ghostty already installed"; return; }
@@ -120,7 +120,7 @@ install_ghostty_linux() {
 
 install_jetbrains_mono_linux() {
   if [ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
-    log "No display detected — skipping font install"
+    log "No display detected - skipping font install"
     return
   fi
   local font_dir="${HOME}/.local/share/fonts"
