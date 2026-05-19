@@ -29,6 +29,13 @@ brew "fnm"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
 
+# Terminal productivity
+brew "lazygit"      # interactive git TUI
+brew "git-delta"    # syntax-highlighted git diff pager
+brew "dust"         # better du, tree-style disk usage
+brew "glow"         # render markdown in terminal
+brew "tealdeer"     # fast Rust client for `tldr` cheatsheets
+
 # Terminal emulator
 cask "ghostty"
 

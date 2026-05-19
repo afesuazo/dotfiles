@@ -13,11 +13,7 @@ vim.cmd("set cursorline")
 
 vim.g.mapleader = " "
 
--- Navigate vim panes 
-vim.api.nvim_set_keymap("n", "<C-j>", "<C-W>j", {noremap = true})
-vim.api.nvim_set_keymap("n", "<C-h>", "<C-W>h", {noremap = true})
-vim.api.nvim_set_keymap("n", "<C-k>", "<C-W>k", {noremap = true})
-vim.api.nvim_set_keymap("n", "<C-l>", "<C-W>l", {noremap = true})
+-- Window/pane navigation (Ctrl-h/j/k/l) is provided by vim-tmux-navigator
 
 vim.api.nvim_set_keymap("n", "<leader>h", ":noh<CR>", {})
 vim.api.nvim_set_keymap("n", "<leader>r", ":bufdo e!<CR>", {})

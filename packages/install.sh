@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Package installer — called by bootstrap/install.sh (or standalone).
+# Package installer - called by bootstrap/install.sh (or standalone).
 # Installs OS-appropriate packages and zsh plugins that aren't in package managers.
 
 set -euo pipefail
@@ -47,12 +47,12 @@ install_macos_packages() {
 # ---------- Linux (Ubuntu/Debian) ----------
 
 require_debian() {
-  [ -r /etc/os-release ] || die "Missing /etc/os-release — unsupported Linux"
+  [ -r /etc/os-release ] || die "Missing /etc/os-release - unsupported Linux"
   # shellcheck disable=SC1091
   . /etc/os-release
   case "${ID:-}:${ID_LIKE:-}" in
     *debian*|ubuntu*|*:*debian*|*:*ubuntu*) : ;;
-    *) die "This repo only supports Debian/Ubuntu Linux — detected ID=${ID:-?}" ;;
+    *) die "This repo only supports Debian/Ubuntu Linux - detected ID=${ID:-?}" ;;
   esac
 }
 
@@ -67,8 +67,29 @@ install_linux_packages() {
   install_eza_linux
   install_starship_linux
   install_fnm_linux
+  install_dust_linux
+  install_glow_linux
+  install_lazygit_linux
   install_ghostty_linux
   install_jetbrains_mono_linux
+}
+
+# Resolve the tag of the latest GitHub release by following the redirect from
+# /releases/latest. Avoids needing the API (no rate limits, no jq dependency).
+_github_latest_tag() {
+  curl -fsSIL "https://github.com/$1/releases/latest" \
+    | awk 'tolower($1) == "location:" { print $2 }' \
+    | tail -1 \
+    | sed 's|.*/tag/||' \
+    | tr -d '\r\n '
+}
+
+_linux_arch_or_die() {
+  case "$(uname -m)" in
+    x86_64|amd64)   printf 'x86_64\n' ;;
+    aarch64|arm64)  printf 'aarch64\n' ;;
+    *) die "Unsupported architecture: $(uname -m)" ;;
+  esac
 }
 
 install_gh_linux() {
@@ -109,11 +130,61 @@ install_fnm_linux() {
   curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
 }
 
+# dust - not packaged in Debian/Ubuntu stable; install from GitHub releases.
+install_dust_linux() {
+  command -v dust >/dev/null 2>&1 && { log "dust already installed"; return; }
+  log "Installing dust from GitHub releases"
+  local arch tag tmp asset
+  arch="$(_linux_arch_or_die)"
+  tag="$(_github_latest_tag bootandy/dust)"
+  asset="dust-${tag}-${arch}-unknown-linux-gnu.tar.gz"
+  tmp="$(mktemp -d)"
+  curl -fsSL -o "${tmp}/dust.tgz" \
+    "https://github.com/bootandy/dust/releases/download/${tag}/${asset}"
+  tar -xzf "${tmp}/dust.tgz" -C "${tmp}" --strip-components=1
+  install -d "${HOME}/.local/bin"
+  install -m 0755 "${tmp}/dust" "${HOME}/.local/bin/dust"
+  rm -rf "${tmp}"
+}
+
+# glow — not in older Debian/Ubuntu. Use Charm's official apt repo.
+install_glow_linux() {
+  command -v glow >/dev/null 2>&1 && { log "glow already installed"; return; }
+  log "Installing glow via Charm's apt repo"
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://repo.charm.sh/apt/gpg.key \
+    | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+  echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" \
+    | sudo tee /etc/apt/sources.list.d/charm.list >/dev/null
+  sudo apt-get update -y
+  sudo apt-get install -y glow
+}
+
+# lazygit — not in stable Debian/Ubuntu; install from GitHub releases.
+install_lazygit_linux() {
+  command -v lazygit >/dev/null 2>&1 && { log "lazygit already installed"; return; }
+  log "Installing lazygit from GitHub releases"
+  local arch tag tmp asset version
+  case "$(uname -m)" in
+    x86_64|amd64)  arch="x86_64" ;;
+    aarch64|arm64) arch="arm64"  ;;
+    *) die "Unsupported architecture for lazygit: $(uname -m)" ;;
+  esac
+  tag="$(_github_latest_tag jesseduffield/lazygit)"
+  version="${tag#v}"                       # lazygit asset names use the bare version
+  asset="lazygit_${version}_Linux_${arch}.tar.gz"
+  tmp="$(mktemp -d)"
+  curl -fsSL -o "${tmp}/lazygit.tgz" \
+    "https://github.com/jesseduffield/lazygit/releases/download/${tag}/${asset}"
+  tar -xzf "${tmp}/lazygit.tgz" -C "${tmp}"
+  install -d "${HOME}/.local/bin"
+  install -m 0755 "${tmp}/lazygit" "${HOME}/.local/bin/lazygit"
+  rm -rf "${tmp}"
+}
+
 install_ghostty_linux() {
-  # Ghostty: no stable apt repo; headless servers don't need it anyway.
-  # Skip silently unless a display is detected.
   if [ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
-    log "No display detected — skipping Ghostty install"
+    log "No display detected - skipping Ghostty install"
     return
   fi
   command -v ghostty >/dev/null 2>&1 && { log "ghostty already installed"; return; }
@@ -121,13 +192,13 @@ install_ghostty_linux() {
 }
 
 install_jetbrains_mono_linux() {
+  if [ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
+    log "No display detected - skipping font install"
+    return
+  fi
   local font_dir="${HOME}/.local/share/fonts"
   if compgen -G "${font_dir}/JetBrainsMonoNerd*.ttf" >/dev/null 2>&1; then
     log "JetBrains Mono Nerd Font already installed"
-    return
-  fi
-  if [ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
-    log "No display detected — skipping font install"
     return
   fi
   log "Installing JetBrains Mono Nerd Font"

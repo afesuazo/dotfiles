@@ -34,7 +34,7 @@ return {
 			return "\t\t\t\t\t\t" .. "Hello " .. name .. "\n\t\t\t\t\t\t" .. datetime
     end
 
-		local userName = "Strider"
+		local userName = "{{ index (splitList " " .name) 0 }}"
 		local greeting = getGreeting(userName)
 		dashboard.section.header.val = vim.split(logo .. "\n" .. greeting, "\n")
 		dashboard.section.buttons.val = {

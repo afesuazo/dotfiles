@@ -28,3 +28,7 @@ python3-pip
 # Zsh ergonomics
 zsh-autosuggestions
 zsh-syntax-highlighting
+
+# Terminal productivity (in apt on recent Debian/Ubuntu)
+git-delta
+tealdeer
